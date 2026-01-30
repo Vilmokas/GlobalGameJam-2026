@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static Masks;
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour
     GameObject interactButton;
 
     [SerializeField]
-    GameObject[] sprites;
+    List<GameObject> sprites;
 
     void Start()
     {
