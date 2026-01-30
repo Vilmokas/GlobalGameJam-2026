@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Masks;
 
 public class Player : MonoBehaviour
 {
@@ -17,8 +18,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     int maxJumpCount;
 
+    [SerializeField]
+    TYPES currentType;
+
     void Start()
     {
+        currentType = TYPES.basic;
         body = GetComponent<Rigidbody2D>();
         jumpCount = maxJumpCount;
     }
@@ -48,13 +53,25 @@ public class Player : MonoBehaviour
             jumpCount--;
         }
 
-        transform.Translate(
-            new Vector3(moveInput.x, 0, moveInput.y) * moveSpeed * Time.deltaTime
-        );
+        transform.Translate(new Vector3(moveInput.x, 0, moveInput.y) * moveSpeed * Time.deltaTime);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         jumpCount = maxJumpCount;
+
+        if (collision.gameObject.TryGetComponent(out Mask mask))
+        {
+            ChangeMask(mask.type);
+            collision.gameObject.SetActive(false);
+        }
+    }
+
+    void ChangeMask(TYPES newMask)
+    {
+        if (currentType != newMask)
+        {
+            currentType = newMask;
+        }
     }
 }
