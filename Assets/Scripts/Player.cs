@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     InputAction move;
     InputAction jump;
     InputAction interact;
+    InputAction attack;
     Rigidbody2D body;
     int jumpCount;
     [SerializeField]
@@ -28,9 +29,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     List<GameObject> sprites;
 
+    [SerializeField]
+    Attack attackController;
+
     void Start()
     {
-        currentType = TYPES.basic;
+        currentType = TYPES.mime;
         body = GetComponent<Rigidbody2D>();
         jumpCount = maxJumpCount;
     }
@@ -40,10 +44,12 @@ public class Player : MonoBehaviour
         move = actions.FindAction("Move");
         jump = actions.FindAction("Jump");
         interact = actions.FindAction("Interact");
+        attack = actions.FindAction("Attack");
 
         move.Enable();
         jump.Enable();
         interact.Enable();
+        attack.Enable();
     }
 
     void OnDisable()
@@ -51,6 +57,7 @@ public class Player : MonoBehaviour
         move.Disable();
         jump.Disable();
         interact.Disable();
+        attack.Disable();
     }
 
     void Update()
@@ -64,6 +71,11 @@ public class Player : MonoBehaviour
         }
 
         transform.Translate(new Vector3(moveInput.x, 0, moveInput.y) * moveSpeed * Time.deltaTime);
+
+        if (attack.WasPressedThisFrame())
+        {
+            attackController.UseAttack(currentType);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
